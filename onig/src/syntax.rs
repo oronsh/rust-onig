@@ -107,6 +107,27 @@ impl Syntax {
         }
     }
 
+    pub fn get_syntax_op(&self) -> SyntaxOperator {
+	unsafe {
+            let op = onig_sys::onig_get_syntax_op(self.raw_mut());
+            SyntaxOperator::from_bits_truncate(u64::from(op))	
+	}
+    }
+
+    pub fn set_syntax_op(&mut self, operators: SyntaxOperator) {
+	unsafe {
+	    let op = onig_sys::onig_get_syntax_op(self.raw_mut());
+	    onig_sys::onig_set_syntax_op(&mut self.raw, op + (operators.bits() as onig_sys::OnigSyntaxOp));
+	}
+    }
+    
+    pub fn get_syntax_op2(&self) -> SyntaxOperator {
+	unsafe {
+            let op = onig_sys::onig_get_syntax_op2(self.raw_mut());
+            SyntaxOperator::from_bits_truncate((u64::from(op) << 32))
+	}
+    }
+
     /// Replace the operators for this syntax
     pub fn set_operators(&mut self, operators: SyntaxOperator) {
         let op = operators.bits() as onig_sys::OnigSyntaxOp;
